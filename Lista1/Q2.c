@@ -1,3 +1,8 @@
+/*2) Crie um struct que guarde nome, idade e peso um atletas. Em um
+vetor, alocado dinamicamente, guarde os dados de N atletas. Exiba uma
+listagem dos dados dos atletas cadastrados. Ao final exiba a média dos
+pesos e quantos atletas são menores de idade.*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,7 +18,7 @@ void listarAtletas(Atletas *lista, int tamanhoLista){
     printf("\n-----LISTAGEM DE ATLETAS-----"); 
     for(int i = 0; i < tamanhoLista; i++){
         printf("\n\n----------ATLETA %d----------", i+1);
-        printf("\n Nome: %s", lista[i].nome);
+        printf("\nNome: %s", lista[i].nome);
         printf("\nIdade: %d anos", lista[i].idade);
         printf("\nPeso: %.2fkg", lista[i].peso);
         printf("\n----------------------------");
@@ -57,27 +62,29 @@ int main(){
     }
     printf("\n------CADASTRO DE ATLETAS------");
     for(int i = 0; i < NAtletas; i++){
-    printf("\n\nATLETA %d", i+1);
-    printf("\nNome: ");
-    fgets(listaAtletas[i].nome, sizeof(listaAtletas[i].nome), stdin);
-    size_t len = strlen(listaAtletas[i].nome);
-        if (len > 0 && listaAtletas[i].nome[len - 1] == '\n') {
-            listaAtletas[i].nome[len - 1] = '\0';
-        }
-    
-    printf("Idade: ");
-    scanf("%d", &listaAtletas[i].idade);
+        printf("\n\nATLETA %d", i+1);
+        printf("\nNome: ");
+        fgets(listaAtletas[i].nome, sizeof(listaAtletas[i].nome), stdin);
+        size_t len = strlen(listaAtletas[i].nome);
+            if (len > 0 && listaAtletas[i].nome[len - 1] == '\n') {
+                listaAtletas[i].nome[len - 1] = '\0';
+            }
+        
+        printf("\nIdade: ");
+        scanf("%d", &listaAtletas[i].idade);
 
-    printf("Peso (em kg): ");
-    scanf("%f", &listaAtletas[i].peso);
-    
-    getchar();
+        printf("\nPeso (em kg): ");
+        scanf("%f", &listaAtletas[i].peso);
+        
+        getchar();
    }
     system("cls");
 
     CalcMediaPesos(listaAtletas, NAtletas);
     QNTDMenoresIdade(listaAtletas, NAtletas);
     listarAtletas(listaAtletas, NAtletas);
+
+    free(listaAtletas);
 
     return 0;
 }
