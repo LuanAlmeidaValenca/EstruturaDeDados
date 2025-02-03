@@ -199,6 +199,7 @@ void sorteio(Lista *lista){
         int random = rand() % lista->tamanho;
         printf("Eliminando concorrente na posição: %d\n", random);
         removerEmLugarEspecifico(lista, random);
+        mudarInicioFim(lista);
         imprimirLista(lista);
         system("pause");
     }
@@ -243,8 +244,6 @@ int main (){
     Lista lista;
 
     while(escolha != 10){
-
-    system("cls");
 
     printf("\nEscolha a opcao desejada: \n");
     printf("1 - Criar lista\n");
