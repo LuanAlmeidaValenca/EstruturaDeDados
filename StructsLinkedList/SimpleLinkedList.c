@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Corrigir as ordens de imput dos dados nas funções "inserir em posiçao" e "inserir ordenado"
+
 typedef struct node_type {
     int data;
     struct node_type *next;
@@ -31,18 +33,21 @@ void printList(List list){
         int i = 1;
         while (temp->next != NULL){
             printf("\nData %d: %d", i, temp->data);
-            temp->next;
+            temp = temp->next;
             i++;
         }
     }
 }
 
-void addFirst(List *list, int data){
+void addFirst(List *list){
     Node *new = malloc(sizeof(Node));
     if(!new){
         printf("\nMemory allocation error!");
         return;
     }
+    int data;
+    printf("\nInsert the data: ");
+    scanf("%d", &data);
     if(list->first == NULL){ //First node
         list->first = new;
         list->last = new;
@@ -57,12 +62,15 @@ void addFirst(List *list, int data){
     printf("Node sucesfully added!");
 }
 
-void addLast(List *list, int data){
+void addLast(List *list){
     Node *new = malloc(sizeof(Node));
     if(!new){
         printf("\nMemory allocation error!");
         return;
     }
+    int data;
+    printf("\nInsert the data: ");
+    scanf("%d", &data);
     if(list->first == NULL){ //First node
         list->first = new;
         list->last = new;
@@ -77,19 +85,27 @@ void addLast(List *list, int data){
     printf("Node sucesfully added!");
 }
 
-void addDeterminedPosition(List *list, int data, int position){
+void addDeterminedPosition(List *list){
     Node *new = malloc(sizeof(Node));
     if(!new){
         printf("\nMemory allocation error!");
         return;
     }
+    
+    int position;
+    printf("\nInsert the position: ");
+    scanf("%d", &position);
+
     if(position <= 1){
         free(new);
-        addFirst(list, data);
+        addFirst(&list);
     }else if(position > list->size){
         free(new);
-        addLast(list, data);
+        addLast(&list);
     }else{
+        int data;
+        printf("\nInsert the data: ");
+        scanf("%d", &data);
         Node *temp = list->first;
         for (int i = 1; i < position - 1; i++){
             temp = temp->next;
@@ -101,31 +117,35 @@ void addDeterminedPosition(List *list, int data, int position){
     }
 }
 
-void ordenedInsert(List *list, int data){
+void ordenedInsert(List *list){
     Node *new = malloc(sizeof(Node));
     if(!new){
         printf("\nMemory allocation error!");
         return;
     }
+    
     if(list->first == NULL){ //First node
-        list->first = new;
-        list->last = new;
-        new->next = NULL;
+        addFirst(&list);
+        free(new);
     } else{
         Node *temp = list->first;
-        while (temp->next->data < data || temp->next == NULL)
+        while (temp->next->data < data && temp->next != NULL)
         {
             temp = temp->next;
         }
         if(temp->next == NULL){
-            addLast(list, data);
+            addLast(&list);
         }else{
+            int data;
+            printf("\nInsert the data: ");
+            scanf("%d", &data);
             new->next = temp->next;
             temp->next = new;
             new->data = data;
         }
         
     }
+    list->size++;
 }
 
 void removeFirst(List *list){
@@ -143,33 +163,117 @@ void removeFirst(List *list){
         list->size--;
         free(remove);
     }
-    printf("The first node was sucesfully removed");
+    printf("\nThe first node was sucesfully removed");
+    list->size--;
 }
 
-void removeLast();
-void removeDeterminedPosition();
+void removeLast(List *list){
+    if(list->first == NULL){
+        printf("\nEmpty list");
+        return;
+    }
+
+    Node *remove = list->last;
+    if (list->first == list->last && list->first != NULL){//If the list has only 1 node
+        list->first = NULL;
+        list->last = NULL;
+        free(remove);
+        return;
+    }
+
+    Node *aux = list->first;
+
+    while (aux->next != remove)
+    {
+        aux = aux->next;
+    }
+    aux->next = NULL;
+    list->last = aux;
+    list->size--;
+    free(remove);
+    printf("\nThe last node was sucesfully removed");
+}
+
+void removeDeterminedPosition(List *list){
+    if(list->first == NULL){
+        printf("\nEmpty list");
+        return;
+    }
+    int position;
+    printf("\nInsert the position: ");
+    scanf("%d", &position);
+
+    if(position >= list->size){
+        removeLast(list);
+        return;
+    }
+    if(position <= 1){
+        removeFirst(list);
+        return;
+    }
+    Node *remove = list->first->next;
+    Node *aux = list->first;
+    for(int i = 1; i < position - 1; i++){
+        remove = remove->next;
+        aux = aux->next;
+    }
+    aux->next = remove->next;
+    free(remove);
+    list->size--;
+}
+
+void order(List *list){
+    if(list->first == NULL){
+        printf("\nEmpty list");
+        return;
+    }
+    if(list->size == 1){
+        printf("\nNot enough elements to order");
+        return;
+    }
+    int swapped;
+    Node *ptr1;
+    Node *lptr = NULL; 
+
+    do {
+        swapped = 0;
+        ptr1 = list->first;
+
+        while (ptr1->next != lptr) {
+            if (ptr1->data > ptr1->next->data) {
+                
+                int temp = ptr1->data;
+                ptr1->data = ptr1->next->data;
+                ptr1->next->data = temp;
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
 
 void freeList(List *list){
     if(list->first == NULL){
-        printf("The list is already free!");
+        printf("\nThe list is already free!");
         return;
     }
     Node *actual = list->first;
     Node *next;
 
-    do{
+    while (actual->next != NULL){
         next = actual->next;
         free(actual);
         actual = next;
-    }while (actual->next != NULL);
+    }
 
-    list->first == NULL;
-    list->last == NULL;
+    list->first = NULL;
+    list->last = NULL;
     list->size = 0;
 }
 
 int main() {
-    int choice = 0, data;
+    int choice = 0, data, position;
     List list;
 
     while (choice != 10) {
@@ -178,44 +282,48 @@ int main() {
         printf("\n1 - Print list");
         printf("\n2 - Add in the start");
         printf("\n3 - Add in the end");
-        printf("\n4 - Add in defined posicion");
+        printf("\n4 - Add in defined position");
         printf("\n5 - Ordened insert");
         printf("\n6 - Remove first");
         printf("\n7 - Remove last");
         printf("\n8 - Remove in defined position");
-        printf("\n9 - Free list"); 
+        printf("\n9 - Order list");
+        printf("\n10 - Free list"); 
         scanf("%d", &choice);
 
-        if (choice < 1 || choice > 9) {
+        if (choice < 1 || choice > 10) {
             printf("Invalid option");
         } else {
             switch (choice) {
                 case 1:
-                    printf("You chose 1: Beginning of the journey!\n");
+                    printList(list);
                     break;
                 case 2:
-                    printf("You chose 2: Twice the start!\n");
+                    addFirst(&list);
                     break;
                 case 3:
-                    printf("You chose 3: Three is a magic number!\n");
+                    addLast(&list);
                     break;
                 case 4:
-                    printf("You chose 4: Four sides of a square!\n");
+                    addDeterminedPosition(&list);
                     break;
                 case 5:
-                    printf("You chose 5: Half a dozen!\n");
+                    ordenedInsert(&list);
                     break;
                 case 6:
-                    printf("You chose 6: Perfect number!\n");
+                    removeFirst(&list);
                     break;
                 case 7:
-                    printf("You chose 7: Lucky number!\n");
+                    removeLast(&list);
                     break;
                 case 8:
-                    printf("You chose 8: Infinity lying down!\n");
+                    removeDeterminedPosition(&list);
                     break;
                 case 9:
-                    printf("You chose 10: The maximum allowed number!\n");
+                    order(&list);
+                    break;
+                case 10:
+                    freeList(&list);
                     break;
                 default:
                     break;
