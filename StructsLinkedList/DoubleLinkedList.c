@@ -1,13 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//verificar "inserir em posiçao", "inserir ordenado" e "remover determinado dado", implementar um verificador para 
-// saber se a lista esta ordenada, e so permitir a inserçao ordenada nesse caso 
+//verificar "inserir em posiçao", "inserir ordenado" e "remover determinado dado"implementar um verificador para 
+// saber se a lista esta ordenada, e so permitir a inserçao ordenada nesse caso
+// continuar depoisde remover dado determinado
 
 
 typedef struct node_type {
     int data;
     struct node_type *next;
+    struct node_type *previous;
 } Node;
 
 typedef struct LIST {
@@ -79,6 +81,7 @@ void addFirst(List *list, int data){
         new->next = temp;
     }
     new->data = data;
+    new->previous = NULL;
     list->size++;
     printf("Node sucesfully added!");
 }
@@ -94,6 +97,7 @@ void addLast(List *list, int data){
         list->last = new;
         new->next = NULL;
     } else{
+        new->previous = list->last;
         list->last->next = new;
         list->last = new;
         new->next = NULL;
@@ -126,6 +130,7 @@ void addDeterminedPosition(List *list, int data){
             temp = temp->next;
         }
         new->next = temp->next;
+        new->previous = temp;
         temp->next = new;
         new->data = data;
         list->size++;
@@ -152,6 +157,7 @@ void ordenedInsert(List *list, int data){
             addLast(list, data);
         }else{
             new->next = temp->next;
+            new->previous = temp;
             temp->next = new;
             new->data = data;
         }
@@ -171,6 +177,7 @@ void removeFirst(List *list){
         list->size = 0;
         free(remove);
     }else{
+        remove->next->previous = NULL;
         list->first = remove->next;
         list->size--;
         free(remove);
@@ -224,11 +231,12 @@ void removeDeterminedPosition(List *list){
         return;
     }
     Node *remove = list->first->next;
-    Node *aux = list->first;
+    Node *aux = remove->previous; 
     for(int i = 1; i < position - 1; i++){
         remove = remove->next;
         aux = aux->next;
     }
+    remove->next->previous = aux;
     aux->next = remove->next;
     free(remove);
     list->size--;
