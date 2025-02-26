@@ -24,6 +24,7 @@ void startList(List *list){
 }
 
 void printList(List list){
+    
     if(list.first == NULL){
         printf("\nEmpty list, nothing to print");
     }else{
@@ -33,15 +34,18 @@ void printList(List list){
             return;
         }
         int i = 1;
-        while (temp->next != NULL){
+        while (temp != NULL){
             printf("\nData %d: %d", i, temp->data);
             temp = temp->next;
             i++;
         }
     }
+    
+    printf("\n");
 }
 
 int search(List *list, int data){
+    printf("\nentrou na search");
     if(list->first == NULL){
         printf("\nEmpty list");
         return 0;
@@ -52,14 +56,14 @@ int search(List *list, int data){
     while(searching->next != NULL && searching->data != data){
         searching = searching->next; 
     }
-    if(find){
+    if(searching->data == data){
         printf("\nData find!");
         find = 1;
     } else {
         printf("\nData not find!");
         find = 0;
     }
-
+    printf("\nsaiu da search");
     return find;
 }
 
@@ -313,13 +317,20 @@ void freeList(List *list){
     list->first = NULL;
     list->last = NULL;
     list->size = 0;
+
+    printf("\nList completely free!");
 }
 
 int main() {
     int choice = 0, data, position;
     List list;
 
-    while (choice != 10) {
+    startList(&list);
+
+    while (choice != 12) {
+        printf("\n");
+        system("pause");
+        //system("cls");
 
         printf("\nMenu");
         printf("\n1 - Print list");
@@ -333,7 +344,7 @@ int main() {
         printf("\n9 - Remove in defined position");
         printf("\n10 - Remove determined data");
         printf("\n11 - Order list");
-        printf("\n12 - Free list"); 
+        printf("\n12 - Free list\n\n"); 
         scanf("%d", &choice);
 
         if (choice < 1 || choice > 12) {
@@ -380,6 +391,7 @@ int main() {
                 case 10:
                     printf("\nInsert the data you want to remove: ");
                     scanf("%d", &data);
+                    removeDeterminedElement(&list, data);
                     break;
                 case 11:
                     order(&list);
